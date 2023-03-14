@@ -2,7 +2,7 @@ function results = getArea(I)
 %takes image and returns area in km^2 (from Matlab)
 
 % Segment
-BW = createMask(I);
+BW = getMask(I);
 
 % Area in pixels
 props = regionprops("table",BW,"Area");
