@@ -1,17 +1,11 @@
-function results = getArea(I)
+function areaKmSq = getArea(I)
 %takes image and returns area in km^2 (from Matlab)
 
-% Segment
-BW = getMask(I);
-
 % Area in pixels
-props = regionprops("table",BW,"Area");
+props = regionprops("table",I,"Area");
 areaPixels = sum(props.Area);
 
 % Area in km^2
 px2km = (51/20)^2;
 areaKmSq = round(areaPixels*px2km);
 
-% Format into structure
-results.BW = BW;
-results.areaKmSq = areaKmSq;
