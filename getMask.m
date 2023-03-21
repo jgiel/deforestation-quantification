@@ -1,21 +1,22 @@
-function [BW,maskedRGBImage] = getMask(RGB)
+function [BW,maskedRGBImage] = getMask(RGB, rThresh, gThresh, bThresh)
 %takes RGB image and returns high-contrast BW image
 
 % Convert RGB image to chosen color space
 I = rgb2hsv(RGB);
 
 % Define thresholds for channel 1 based on histogram settings
-channel1Min = 0.000;
-channel1Max = 0.213;
+channel1Min = rThresh(1);
+channel1Max = rThresh(2);
 
 % Define thresholds for channel 2 based on histogram settings
-channel2Min = 0.000;
-channel2Max = 1.000;
+channel2Min = gThresh(1);
+channel2Max = gThresh(2);
 
 % Define thresholds for channel 3 based on histogram settings
-channel3Min = 0.000;
-channel3Max = 0.791;
+channel3Min = bThresh(1);
+channel3Max = bThresh(2);
 
+%IF ALL THREE COLORS FALL WITHIN RANGE, THEN CONVERT TO WHITE
 % Create mask based on chosen histogram thresholds
 sliderBW = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
