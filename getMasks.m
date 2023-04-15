@@ -1,5 +1,5 @@
 function [MaskedImages,idxs] = getMasks(Images, thresholds)
-%GETMASKS returns mask for each image in Images array 
+%GETMASKS returns mask for each image in Images array (using Mask.m)
 %   takes: 
 %       Images (indices [# images, 3, M, N])  
 %       thresholds (3x2 array containing min and max for each RGB)
@@ -23,7 +23,7 @@ function [MaskedImages,idxs] = getMasks(Images, thresholds)
     bThresh = thresholds(2, :);
     gThresh = thresholds(3, :);
     for i = 1:numImages
-        MaskedImages(i, :, :) = Mask(squeeze(Images(i,:,:,:)), rThresh, bThresh, gThresh);
+        MaskedImages(i, :, :) = Mask_HSV(squeeze(Images(i,:,:,:)), rThresh, bThresh, gThresh);
     end
     
     idxs = (MaskedImages == 1); %pixels that are white in image

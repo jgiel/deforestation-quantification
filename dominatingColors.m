@@ -1,6 +1,7 @@
 clear; close all;
-image = imread("imageSeries2_year2001.png");
-M = 1701; N = 1913;
+image = imread("imageSeries3_year2000.png");
+[M, N, ~] = size(image);
+image = rgb2hsv(image);
 imageR = image(:,:,1);
 %imageR_vec = imageR(:);
 
@@ -10,8 +11,8 @@ imageG = image(:,:,2);
 imageB = image(:,:,3);
 %imageB_vec = imageB(:);
 
-imageR_reduced = zeros(floor(M/10), floor(N/10)); imageG_reduced = imageR_reduced; imageB_reduced = imageR_reduced;
-
+%imageR_reduced = zeros(floor(M/10), floor(N/10)); imageG_reduced = imageR_reduced; imageB_reduced = imageR_reduced;
+imageR_reduced = imageR; imageG_reduced = imageG; imageB_reduced = imageB;
 i = 1; %reduced matrix's m element
 for m = 1:10:M
     j = 1; %reduced matrix's n element
@@ -26,20 +27,11 @@ for m = 1:10:M
     i = i+1;
 end
 
-%check that image is reconstructed
-% image_reduced = zeros(171, 192, 3);
-% image_reduced(:,:,1) = imageR_reduced;
-% image_reduced(:,:,2) = imageG_reduced;
-% image_reduced(:,:,3) = imageB_reduced;
-% image_reduced = uint8(image_reduced);
-% imshow(image_reduced);
 
-
-
-% 
-Mvec = linspace(1, floor(M/10), floor(M/10)+1);
-Nvec = linspace(1, floor(N/10), floor(N/10)+1);
-
+%Mvec = linspace(1, floor(M/10), floor(M/10)+1);
+%Nvec = linspace(1, floor(N/10), floor(N/10)+1);
+Mvec = linspace(1, M, M);
+Nvec = linspace(1, N, N);
 figure
 surf(Nvec, Mvec, imageR_reduced, 'FaceColor', 'r')
 hold on
