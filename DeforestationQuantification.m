@@ -1,4 +1,3 @@
-
 %Runs UI application where user:
 % - selects images (of same dimension)
 % - identifies non-forest objects using masking
@@ -15,11 +14,12 @@ clear;
 close all;	
 imtool close all;	
 
+%from MATLAB
 if(~isdeployed)
-	cd(fileparts(which(mfilename))); % From Brett
+	cd(fileparts(which(mfilename))); 
 end
 
-% check if user has  IPT installed.
+% check if user has  IPT installed. (From MATLAB)
 hasIPT = license("test", "image_toolbox");
 if ~hasIPT
 	
