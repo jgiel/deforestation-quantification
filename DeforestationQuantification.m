@@ -20,12 +20,12 @@ if(~isdeployed)
 end
 
 % check if user has  IPT installed.
-hasIPT = license('test', 'image_toolbox');
+hasIPT = license("test", "image_toolbox");
 if ~hasIPT
 	
-	message = sprintf('You do not seem to have the Image Processing Toolbox.\nDo you want to continue?');
-	reply = questdlg(message, 'Toolbox missing', 'Yes', 'No', 'Yes');
-	if strcmpi(reply, 'No')
+	message = sprintf("You do not seem to have the Image Processing Toolbox.\nDo you want to continue?");
+	reply = questdlg(message, "Toolbox missing", "Yes", "No", "Yes");
+	if strcmpi(reply, "No")
 		return;
 	end
 end
@@ -34,22 +34,22 @@ end
 close all;
 fontSize = 16;
 gcf = figure;
-set(gcf, 'units','normalized','outerposition',[0 0 1 1]); %maximize figure
+set(gcf, "units","normalized","outerposition",[0 0 1 1]); %maximize figure
 
 if(~isdeployed) % (?) necessary?
 	cd(fileparts(which(mfilename)));
 end
 
-message = sprintf('First, choose images (of the same size) in chronological order for deforestation quantifictation');
-reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-if strcmpi(reply, 'Cancel')
+message = sprintf("First, choose images (of the same size) in chronological order for deforestation quantifictation");
+reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+if strcmpi(reply, "Cancel")
     return;
 end
 
 % Let user pick their images 
 cd(pwd); 
 % Browse for the image file. 
-[baseFileNames, folder] = uigetfile('*.*', 'Specify satellite images (in chronological order)', 'MultiSelect', 'on'); %(?) only one file for now
+[baseFileNames, folder] = uigetfile("*.*", "Specify satellite images (in chronological order)", "MultiSelect", "on"); %(?) only one file for now
 numImages = length(baseFileNames); %number of images
 if ischar(baseFileNames)
     numImages = 1;
@@ -61,16 +61,16 @@ if (numImages > 1)
     for i = 1:numImages     
         fullImageFileNames(i) = fullfile(folder, baseFileNames(i)); 
         %check to see if file exists
-        if ~exist(fullImageFileNames(i), 'file')
-            message = sprintf('This file does not exist:\n%s', fullImageFileNames(i));
+        if ~exist(fullImageFileNames(i), "file")
+            message = sprintf("This file does not exist:\n%s", fullImageFileNames(i));
             uiwait(msgbox(message));
             return; % (?) does this exit function if main file is not function
         end
     end   
 else %if only one file chosen
     fullImageFileNames = fullfile(folder, baseFileNames); 
-    if ~exist(fullImageFileNames, 'file')
-        message = sprintf('This file does not exist:\n%s', fullImageFileNames);
+    if ~exist(fullImageFileNames, "file")
+        message = sprintf("This file does not exist:\n%s", fullImageFileNames);
         uiwait(msgbox(message));
         return; % (?) does this exit function if main file is not function
     end
@@ -104,14 +104,14 @@ end
 %check if object detection necessary
 objectMasks = uint8(zeros(numImages, M, N)); %remains 0 if object detection not necessary
 
-message = sprintf('Does your image contain non-forest objects (such as rivers, towns, or text)?'); %(?) change text?
-reply = questdlg(message, 'Object detection required?', 'Yes', 'No', 'No');
-if strcmpi(reply, 'Yes')
+message = sprintf("Does your image contain non-forest objects (such as rivers, towns, or text)?"); %(?) change text?
+reply = questdlg(message, "Object detection required?", "Yes", "No", "No");
+if strcmpi(reply, "Yes")
 
     %begin object detection
-    message = sprintf('We will use HSV imagery to detect these non-forest objects'); %(?) change text?
-	    reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-    if strcmpi(reply, 'Cancel')
+    message = sprintf("We will use HSV imagery to detect these non-forest objects"); %(?) change text?
+	    reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+    if strcmpi(reply, "Cancel")
         return;
     end
     
@@ -122,8 +122,8 @@ if strcmpi(reply, 'Yes')
     %find threshold values and masks for identifying objects in each image
     for i = 1:numImages
         message = sprintf("Let's detect non-forest objects in image %d", i); % (?) change text?
-	        reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-        if strcmpi(reply, 'Cancel')
+	        reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+        if strcmpi(reply, "Cancel")
             return;
         end
         maskNum = 1;
@@ -131,7 +131,7 @@ if strcmpi(reply, 'Yes')
         adequateReply = ""; %yes if one threshold is adequate
         newMaskReply = ""; %no if user is done finding thresholds for image
         %loop until threshold is adequate and all thresholds found
-        while ~strcmpi(adequateReply, 'Yes')|| strcmpi(newMaskReply, 'Yes')
+        while ~strcmpi(adequateReply, "Yes")|| strcmpi(newMaskReply, "Yes")
            %display H, S, and V images and histograms
     
             % Display the original image
@@ -139,8 +139,8 @@ if strcmpi(reply, 'Yes')
             hRGB = imshow(squeeze(rgbImages(i,:,:,:)));
             % Set up an infor panel so you can mouse around and inspect the value values.
             hrgbPI = impixelinfo(hRGB);
-            title('RGB Image', 'FontSize', fontSize)
-            set(hrgbPI, 'Units', 'Normalized', 'Position',[.15 .69 .15 .02]);
+            title("RGB Image", "FontSize", fontSize)
+            set(hrgbPI, "Units", "Normalized", "Position",[.15 .69 .15 .02]);
             drawnow; % Make it display immediately. 
             
         
@@ -154,57 +154,57 @@ if strcmpi(reply, 'Yes')
             % Display the hue image.
             subplot(3, 4, 2);
             h1 = imshow(hImage);
-            title('Hue Image', 'FontSize', fontSize);
+            title("Hue Image", "FontSize", fontSize);
             % Set up an infor panel
             hHuePI = impixelinfo(h1);
-            set(hHuePI, 'Units', 'Normalized', 'Position',[.34 .69 .15 .02]);
+            set(hHuePI, "Units", "Normalized", "Position",[.34 .69 .15 .02]);
             
             % Display the saturation image.
             h2 = subplot(3, 4, 3);
             imshow(sImage);
-            title('Saturation Image', 'FontSize', fontSize);
+            title("Saturation Image", "FontSize", fontSize);
             % Set up an infor panel 
             hSatPI = impixelinfo(h2);
-            set(hSatPI, 'Units', 'Normalized', 'Position',[.54 .69 .15 .02]);
+            set(hSatPI, "Units", "Normalized", "Position",[.54 .69 .15 .02]);
             
             % Display the value image.
             h3 = subplot(3, 4, 4);
             imshow(vImage);
-            title('Value Image', 'FontSize', fontSize);
+            title("Value Image", "FontSize", fontSize);
             % Set up an infor panel 
             hValuePI = impixelinfo(h3);
-            set(hValuePI, 'Units', 'Normalized', 'Position',[.75 .69 .15 .02]);
+            set(hValuePI, "Units", "Normalized", "Position",[.75 .69 .15 .02]);
         
         
             % Compute and plot the histogram of the "hue" band.
             hHuePlot = subplot(3, 4, 6); 
             [hueCounts, hueBinValues] = imhist(hImage); 
             maxCountHue = max(hueCounts); 
-            area(hueBinValues, hueCounts, 'FaceColor', 'r'); 
+            area(hueBinValues, hueCounts, "FaceColor", "r"); 
             grid on; 
-            xlabel('Hue'); 
-            ylabel('Pixel Count'); 
-            title('Histogram of Hue Image', 'FontSize', fontSize);
+            xlabel("Hue"); 
+            ylabel("Pixel Count"); 
+            title("Histogram of Hue Image", "FontSize", fontSize);
         
             % Compute and plot the histogram of the "saturation" band.
             hSaturationPlot = subplot(3, 4, 7); 
             [saturationCounts, saturationBinValues] = imhist(sImage); 
             maxCountSaturation = max(saturationCounts); 
-            area(saturationBinValues, saturationCounts, 'FaceColor', 'g'); 
+            area(saturationBinValues, saturationCounts, "FaceColor", "g"); 
             grid on; 
-            xlabel('Saturation'); 
-            ylabel('Pixel Count'); 
-            title('Histogram of Saturation Image', 'FontSize', fontSize);
+            xlabel("Saturation"); 
+            ylabel("Pixel Count"); 
+            title("Histogram of Saturation Image", "FontSize", fontSize);
         
             % Compute and plot the histogram of the "value" band.
             hValuePlot = subplot(3, 4, 8); 
             [valueCounts, valueBinValues] = imhist(vImage); 
             maxCountValue = max(valueCounts); 
-            area(valueBinValues, valueCounts, 'FaceColor', 'b'); 
+            area(valueBinValues, valueCounts, "FaceColor", "b"); 
             grid on; 
-            xlabel('Value'); 
-            ylabel('Pixel Count'); 
-            title('Histogram of Value Image', 'FontSize', fontSize);
+            xlabel("Value"); 
+            ylabel("Pixel Count"); 
+            title("Histogram of Value Image", "FontSize", fontSize);
         
             % make all axes the same height
             maxCount = max([maxCountHue,  maxCountSaturation, maxCountValue]); 
@@ -212,61 +212,61 @@ if strcmpi(reply, 'Yes')
         
             % Plot all 3 histograms in one plot.
             subplot(3, 4, 5); 
-            plot(hueBinValues, hueCounts, 'r', 'LineWidth', 2); 
+            plot(hueBinValues, hueCounts, "r", "LineWidth", 2); 
             grid on; 
-            xlabel('Values'); 
-            ylabel('Pixel Count'); 
+            xlabel("Values"); 
+            ylabel("Pixel Count"); 
             hold on; 
-            plot(saturationBinValues, saturationCounts, 'g', 'LineWidth', 2); 
-            plot(valueBinValues, valueCounts, 'b', 'LineWidth', 2); 
-            title('Histogram of All Bands', 'FontSize', fontSize); 
+            plot(saturationBinValues, saturationCounts, "g", "LineWidth", 2); 
+            plot(valueBinValues, valueCounts, "b", "LineWidth", 2); 
+            title("Histogram of All Bands", "FontSize", fontSize); 
             % Make x-axis to just the max gray level on the bright end. 
             xlim([0 1]); 
     
             %if user is doing is repeating mask
-            if strcmp(adequateReply, 'No')
-                message = sprintf('Repeating mask %d for image %d', maskNum, i);
-                reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-                if strcmpi(reply, 'Cancel')
+            if strcmp(adequateReply, "No")
+                message = sprintf("Repeating mask %d for image %d", maskNum, i);
+                reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+                if strcmpi(reply, "Cancel")
                     return;
                 end
             end
             %if user is doing new mask
-            if strcmp(newMaskReply, 'Yes')
-                message = sprintf('Starting mask %d for image %d', maskNum, i);
-                reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-                if strcmpi(reply, 'Cancel')
+            if strcmp(newMaskReply, "Yes")
+                message = sprintf("Starting mask %d for image %d", maskNum, i);
+                reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+                if strcmpi(reply, "Cancel")
                     return;
                 end
             end
             %if user did not want to reuse the same threshold values as before
-            if ~strcmp(reuseReply, 'Reuse')
-                message = sprintf('Enter the threshold values for the desired object in image %d using the black and white images\n(Hint: place your mouse on image to determine pixel values)', i);
-	                reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-                if strcmpi(reply, 'Cancel')
+            if ~strcmp(reuseReply, "Reuse")
+                message = sprintf("Enter the threshold values for the desired object in image %d using the black and white images\n(Hint: place your mouse on image to determine pixel values)", i);
+	                reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+                if strcmpi(reply, "Cancel")
                     return;
                 end
     
-                opts.WindowStyle = 'normal'; 
-                hueLowBound = sscanf(cell2mat(inputdlg('Lower bound for hue:','Hue low bound', 1, {'0'}, opts)), '%f');
-                hueUpBound = sscanf(cell2mat(inputdlg('Upper bound for hue:','Hue up bound', 1, {'1'}, opts)), '%f');
+                opts.WindowStyle = "normal"; 
+                hueLowBound = sscanf(cell2mat(inputdlg("Lower bound for hue:","Hue low bound", 1, {'0'}, opts)), "%f");
+                hueUpBound = sscanf(cell2mat(inputdlg("Upper bound for hue:","Hue up bound", 1, {'1'}, opts)), "%f");
               
                 PlaceThresholdBars(6, hueLowBound, hueUpBound);
     
-                saturationLowBound = sscanf(cell2mat(inputdlg('Lower bound for saturation:','Saturation low bound', 1, {'0'}, opts)), '%f');
-                saturationUpBound = sscanf(cell2mat(inputdlg('Upper bound for saturation:','Saturation up bound', 1, {'1'}, opts)), '%f');
+                saturationLowBound = sscanf(cell2mat(inputdlg("Lower bound for saturation:","Saturation low bound", 1, {'0'}, opts)), "%f");
+                saturationUpBound = sscanf(cell2mat(inputdlg("Upper bound for saturation:","Saturation up bound", 1, {'1'}, opts)), "%f");
               
                 PlaceThresholdBars(7, saturationLowBound, saturationUpBound);
         
-                valueLowBound = sscanf(cell2mat(inputdlg('Lower bound for value:','Value low bound', 1, {'0'}, opts)), '%f');
-                valueUpBound = sscanf(cell2mat(inputdlg('Upper bound for value:','Value up bound', 1, {'1'}, opts)), '%f');
+                valueLowBound = sscanf(cell2mat(inputdlg("Lower bound for value:","Value low bound", 1, {'0'}, opts)), "%f");
+                valueUpBound = sscanf(cell2mat(inputdlg("Upper bound for value:","Value up bound", 1, {'1'}, opts)), "%f");
               
                 PlaceThresholdBars(8, valueLowBound, valueUpBound);
             %reusing same thresholds as before
             else 
-                message = sprintf('Reusing threshold values from previous image...');
-                reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-                if strcmpi(reply, 'Cancel')
+                message = sprintf("Reusing threshold values from previous image...");
+                reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+                if strcmpi(reply, "Cancel")
                     return;
                 end
                 PlaceThresholdBars(6, hueLowBound, hueUpBound);
@@ -284,23 +284,23 @@ if strcmpi(reply, 'Yes')
             fontSize = 16;
             subplot(3, 4, 10);
             imshow(hueMask, [0 1]);
-            title('Hue Mask', 'FontSize', fontSize);
+            title("Hue Mask", "FontSize", fontSize);
             subplot(3, 4, 11);
             imshow(saturationMask, [0 1]);
-            title('Saturation Mask', 'FontSize', fontSize);
+            title("Saturation Mask", "FontSize", fontSize);
             subplot(3, 4, 12);
             imshow(valueMask, [0 1]);
-            title('Value Mask', 'FontSize', fontSize);
+            title("Value Mask", "FontSize", fontSize);
     
             %show masked image
             maskedImage = uint8(hueMask & saturationMask & valueMask); %masked BW image
             subplot(3, 4, 9);
             imshow(maskedImage, []);
-            caption = sprintf('Masked image');
-            title(caption, 'FontSize', fontSize);
+            caption = sprintf("Masked image");
+            title(caption, "FontSize", fontSize);
             message = sprintf("Now let's see the image with the masking applied");
-            reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-            if strcmpi(reply, 'Cancel')
+            reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+            if strcmpi(reply, "Cancel")
                 return;
             end
     
@@ -313,25 +313,30 @@ if strcmpi(reply, 'Yes')
             clf; %clear figure
             
             imshow(currentMaskedRGBImage)
-            set(gcf, 'units','normalized','outerposition',[0 0 1 1]); %maximize
+            set(gcf, "units","normalized","outerposition",[0 0 1 1]); %maximize
     
-            adequateReply = questdlg('Adequate threshold values?', 'Check values','Yes', 'No', 'Yes');
-            if strcmp(adequateReply, 'No')
+            adequateReply = questdlg("Adequate threshold values?", "Check values","Yes", "No", "Yes");
+            if strcmp(adequateReply, "No")
                 reuseReply = "No"; %mask not to be reused (because not moving on yet)
-                %openfig('currentFigure.fig'); %open saved figure without masks
                 clf;
-                set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
+                set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
     
            
             else
-               objectMasks(i, :, :) = squeeze(objectMasks(i, :, :))+maskedImage; %add mask to running mask array (1's are elements to ignore in mask)
+                %display threshold values
+               disp(strcat("Object ", num2str(maskNum), " "," threshold values for image ", " ",num2str(i), ":"))
+               disp(strcat("Hue values from ", num2str(hueLowBound), " to ", num2str(hueUpBound)))
+               disp(strcat("Saturation values from ", num2str(saturationLowBound), " to ",num2str(saturationUpBound)))
+               disp(strcat("Value values from ", num2str(valueLowBound), " "," to ", num2str(valueUpBound)))
+               disp(" ") %print line
+               objectMasks(i, :, :) = squeeze(objectMasks(i, :, :))+maskedImage; %add mask to running mask array (1"s are elements to ignore in mask)
     
     
-               newMaskReply = questdlg('Create new mask on same image to detect different object?', 'Repeat mask','Yes', 'No', 'Yes');
-               if strcmp(newMaskReply, 'Yes')
+               newMaskReply = questdlg("Create new mask on same image to detect different object?", "Repeat mask","Yes", "No", "Yes");
+               if strcmp(newMaskReply, "Yes")
                    reuseReply = "No";%mask not to be reused (because not moving on yet)
                    clf; %clear figure
-                   set(gcf, 'units','normalized','outerposition',[0 0 1 1]); %maximize
+                   set(gcf, "units","normalized","outerposition",[0 0 1 1]); %maximize
     
                    maskNum = maskNum+1;
     
@@ -345,9 +350,9 @@ if strcmpi(reply, 'Yes')
         objectMaskedRGBImages(i, :, :, 2) = uint8(squeeze(objectMasks(i,:,:))==0) .* squeeze(rgbImages(i,:,:,2));
         objectMaskedRGBImages(i, :, :, 3) = uint8(squeeze(objectMasks(i,:,:))==0) .* squeeze(rgbImages(i,:,:,3));
         if i~=numImages
-            reuseReply = questdlg('Repeat mask with same threshold values for next image?', 'Reuse threshold values?','Reuse', 'Get new thresholds', 'Reuse');
+            reuseReply = questdlg("Repeat mask with same threshold values for next image?", "Reuse threshold values?","Reuse", "Get new thresholds", "Reuse");
             clf; 
-	        set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
+	        set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
         end
         
     
@@ -355,10 +360,10 @@ if strcmpi(reply, 'Yes')
     
     %show masked images with objects removed
     clf;
-    set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
-    message = sprintf('Now we will show the satellite images with the identified objects turned black');
-	    reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-    if strcmpi(reply, 'Cancel')
+    set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
+    message = sprintf("Now we will show the satellite images with the identified objects turned black");
+	    reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+    if strcmpi(reply, "Cancel")
         return;
     end
     for i = 1:numImages
@@ -366,13 +371,13 @@ if strcmpi(reply, 'Yes')
         subplot(1, numImages, i)
         imshow(squeeze(objectMaskedRGBImages(i,:,:,:)))
     end
-    set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
+    set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
     
     pause(1)
     
-    message = sprintf('Now, we will repeat the masking process to identify areas of deforestation');
-    reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-    if strcmpi(reply, 'Cancel')
+    message = sprintf("Now, we will repeat the masking process to identify areas of deforestation");
+    reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+    if strcmpi(reply, "Cancel")
         return;
     end
     
@@ -381,15 +386,15 @@ end
 
 
 clf;
-set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
+set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
 finalMaskedRGBImages = zeros(size(rgbImages)); %masked color images
 finalMasks = uint8(zeros(numImages, M, N)); %holds masked BW images
 %find threshold values and masks for deforested areas in each image
 reuseReply = "";
 for i = 1:numImages
     message = sprintf("Let's identify deforested areas in image %d", i); % (?) change text?
-    reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-    if strcmpi(reply, 'Cancel')
+    reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+    if strcmpi(reply, "Cancel")
         return;
     end
     maskNum = 1;
@@ -397,7 +402,7 @@ for i = 1:numImages
     %instantiate replys
     adequateReply = ""; %yes if one threshold is adequate
     %loop until threshold is adequate and all thresholds found
-    while ~strcmpi(adequateReply, 'Yes')
+    while ~strcmpi(adequateReply, "Yes")
        %display H, S, and V images and histograms
 
         % Display the original image
@@ -405,8 +410,8 @@ for i = 1:numImages
         hRGB = imshow(squeeze(rgbImages(i,:,:,:)));
         % Set up an infor panel so you can mouse around and inspect the value values.
         hrgbPI = impixelinfo(hRGB);
-        title('RGB Image', 'FontSize', fontSize)
-        set(hrgbPI, 'Units', 'Normalized', 'Position',[.15 .69 .15 .02]);
+        title("RGB Image", "FontSize", fontSize)
+        set(hrgbPI, "Units", "Normalized", "Position",[.15 .69 .15 .02]);
         drawnow; % Make it display immediately. 
         
     
@@ -420,57 +425,57 @@ for i = 1:numImages
         % Display the hue image.
         subplot(3, 4, 2);
         h1 = imshow(hImage);
-        title('Hue Image', 'FontSize', fontSize);
+        title("Hue Image", "FontSize", fontSize);
         % Set up an infor panel
         hHuePI = impixelinfo(h1);
-        set(hHuePI, 'Units', 'Normalized', 'Position',[.34 .69 .15 .02]);
+        set(hHuePI, "Units", "Normalized", "Position",[.34 .69 .15 .02]);
         
         % Display the saturation image.
         h2 = subplot(3, 4, 3);
         imshow(sImage);
-        title('Saturation Image', 'FontSize', fontSize);
+        title("Saturation Image", "FontSize", fontSize);
         % Set up an infor panel 
         hSatPI = impixelinfo(h2);
-        set(hSatPI, 'Units', 'Normalized', 'Position',[.54 .69 .15 .02]);
+        set(hSatPI, "Units", "Normalized", "Position",[.54 .69 .15 .02]);
         
         % Display the value image.
         h3 = subplot(3, 4, 4);
         imshow(vImage);
-        title('Value Image', 'FontSize', fontSize);
+        title("Value Image", "FontSize", fontSize);
         % Set up an infor panel 
         hValuePI = impixelinfo(h3);
-        set(hValuePI, 'Units', 'Normalized', 'Position',[.75 .69 .15 .02]);
+        set(hValuePI, "Units", "Normalized", "Position",[.75 .69 .15 .02]);
     
     
         % Compute and plot the histogram of the "hue" band.
         hHuePlot = subplot(3, 4, 6); 
         [hueCounts, hueBinValues] = imhist(hImage); 
         maxCountHue = max(hueCounts); 
-        area(hueBinValues, hueCounts, 'FaceColor', 'r'); 
+        area(hueBinValues, hueCounts, "FaceColor", "r"); 
         grid on; 
-        xlabel('Hue'); 
-        ylabel('Pixel Count'); 
-        title('Histogram of Hue Image', 'FontSize', fontSize);
+        xlabel("Hue"); 
+        ylabel("Pixel Count"); 
+        title("Histogram of Hue Image", "FontSize", fontSize);
     
         % Compute and plot the histogram of the "saturation" band.
         hSaturationPlot = subplot(3, 4, 7); 
         [saturationCounts, saturationBinValues] = imhist(sImage); 
         maxCountSaturation = max(saturationCounts); 
-        area(saturationBinValues, saturationCounts, 'FaceColor', 'g'); 
+        area(saturationBinValues, saturationCounts, "FaceColor", "g"); 
         grid on; 
-        xlabel('Saturation'); 
-        ylabel('Pixel Count'); 
-        title('Histogram of Saturation Image', 'FontSize', fontSize);
+        xlabel("Saturation"); 
+        ylabel("Pixel Count"); 
+        title("Histogram of Saturation Image", "FontSize", fontSize);
     
         % Compute and plot the histogram of the "value" band.
         hValuePlot = subplot(3, 4, 8); 
         [valueCounts, valueBinValues] = imhist(vImage); 
         maxCountValue = max(valueCounts); 
-        area(valueBinValues, valueCounts, 'FaceColor', 'b'); 
+        area(valueBinValues, valueCounts, "FaceColor", "b"); 
         grid on; 
-        xlabel('Value'); 
-        ylabel('Pixel Count'); 
-        title('Histogram of Value Image', 'FontSize', fontSize);
+        xlabel("Value"); 
+        ylabel("Pixel Count"); 
+        title("Histogram of Value Image", "FontSize", fontSize);
     
         %make axes the same height
         maxCount = max([maxCountHue,  maxCountSaturation, maxCountValue]); 
@@ -478,54 +483,54 @@ for i = 1:numImages
     
         % Plot all 3 histograms in one plot.
         subplot(3, 4, 5); 
-        plot(hueBinValues, hueCounts, 'r', 'LineWidth', 2); 
+        plot(hueBinValues, hueCounts, "r", "LineWidth", 2); 
         grid on; 
-        xlabel('Values'); 
-        ylabel('Pixel Count'); 
+        xlabel("Values"); 
+        ylabel("Pixel Count"); 
         hold on; 
-        plot(saturationBinValues, saturationCounts, 'g', 'LineWidth', 2); 
-        plot(valueBinValues, valueCounts, 'b', 'LineWidth', 2); 
-        title('Histogram of All Bands', 'FontSize', fontSize); 
+        plot(saturationBinValues, saturationCounts, "g", "LineWidth", 2); 
+        plot(valueBinValues, valueCounts, "b", "LineWidth", 2); 
+        title("Histogram of All Bands", "FontSize", fontSize); 
         % Make x-axis to just the max gray level on the bright end. 
         xlim([0 1]); 
 
         %if user is doing is repeating mask
-        if strcmp(adequateReply, 'No')
-            message = sprintf('Repeating deforestation mask for image %d', maskNum, i);
-            reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-            if strcmpi(reply, 'Cancel')
+        if strcmp(adequateReply, "No")
+            message = sprintf("Repeating deforestation mask for image %d", maskNum, i);
+            reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+            if strcmpi(reply, "Cancel")
                 return;
             end
         end
         
         %if user did not want to reuse the same threshold values as before
-        if ~strcmp(reuseReply, 'Reuse (recommended)')
-            message = sprintf('Enter the threshold values for the deforested areas in image %d using the black and white images\n(Hint: place your mouse on image to determine pixel values)', i);
-	            reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-            if strcmpi(reply, 'Cancel')
+        if ~strcmp(reuseReply, "Reuse (recommended)")
+            message = sprintf("Enter the threshold values for the deforested areas in image %d using the black and white images\n(Hint: place your mouse on image to determine pixel values)", i);
+	            reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+            if strcmpi(reply, "Cancel")
                 return;
             end
 
-            opts.WindowStyle = 'normal'; 
-            hueLowBound = sscanf(cell2mat(inputdlg('Lower bound for hue:','Hue low bound', 1, {'0'}, opts)), '%f');
-            hueUpBound = sscanf(cell2mat(inputdlg('Upper bound for hue:','Hue up bound', 1, {'1'}, opts)), '%f');
+            opts.WindowStyle = "normal"; 
+            hueLowBound = sscanf(cell2mat(inputdlg("Lower bound for hue:","Hue low bound", 1, {'0'}, opts)), "%f");
+            hueUpBound = sscanf(cell2mat(inputdlg("Upper bound for hue:","Hue up bound", 1, {'1'}, opts)), "%f");
           
             PlaceThresholdBars(6, hueLowBound, hueUpBound);
 
-            saturationLowBound = sscanf(cell2mat(inputdlg('Lower bound for saturation:','Saturation low bound', 1, {'0'}, opts)), '%f');
-            saturationUpBound = sscanf(cell2mat(inputdlg('Upper bound for saturation:','Saturation up bound', 1, {'1'}, opts)), '%f');
+            saturationLowBound = sscanf(cell2mat(inputdlg("Lower bound for saturation:","Saturation low bound", 1, {'0'}, opts)), "%f");
+            saturationUpBound = sscanf(cell2mat(inputdlg("Upper bound for saturation:","Saturation up bound", 1, {'1'}, opts)), "%f");
           
             PlaceThresholdBars(7, saturationLowBound, saturationUpBound);
     
-            valueLowBound = sscanf(cell2mat(inputdlg('Lower bound for value:','Value low bound', 1, {'0'}, opts)), '%f');
-            valueUpBound = sscanf(cell2mat(inputdlg('Upper bound for value:','Value up bound', 1, {'1'}, opts)), '%f');
+            valueLowBound = sscanf(cell2mat(inputdlg("Lower bound for value:","Value low bound", 1, {'0'}, opts)), "%f");
+            valueUpBound = sscanf(cell2mat(inputdlg("Upper bound for value:","Value up bound", 1, {'1'}, opts)), "%f");
           
             PlaceThresholdBars(8, valueLowBound, valueUpBound);
         %reusing same thresholds as before
         else 
-            message = sprintf('Reusing threshold values from previous image...');
-            reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-            if strcmpi(reply, 'Cancel')
+            message = sprintf("Reusing threshold values from previous image...");
+            reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+            if strcmpi(reply, "Cancel")
                 return;
             end
             PlaceThresholdBars(6, hueLowBound, hueUpBound);
@@ -543,23 +548,23 @@ for i = 1:numImages
         fontSize = 16;
         subplot(3, 4, 10);
         imshow(hueMask, [0 1]);
-        title('Hue Mask', 'FontSize', fontSize);
+        title("Hue Mask", "FontSize", fontSize);
         subplot(3, 4, 11);
         imshow(saturationMask, [0 1]);
-        title('Saturation Mask', 'FontSize', fontSize);
+        title("Saturation Mask", "FontSize", fontSize);
         subplot(3, 4, 12);
         imshow(valueMask, [0 1]);
-        title('Value Mask', 'FontSize', fontSize);
+        title("Value Mask", "FontSize", fontSize);
 
         %show masked image
         maskedImage = uint8(hueMask & saturationMask & valueMask); %masked BW image
         subplot(3, 4, 9);
         imshow(maskedImage, []);
-        caption = sprintf('Masked image');
-        title(caption, 'FontSize', fontSize);
+        caption = sprintf("Masked image");
+        title(caption, "FontSize", fontSize);
         message = sprintf("Now let's see the image with thresholded areas turned black");
-        reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-        if strcmpi(reply, 'Cancel')
+        reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+        if strcmpi(reply, "Cancel")
             return;
         end
 
@@ -572,15 +577,21 @@ for i = 1:numImages
         clf; %clear figure
         
         imshow(currentMaskedRGBImage)%shows all pixels within thresholds as black (?) show identified objects as different color?
-        set(gcf, 'units','normalized','outerposition',[0 0 1 1]); %maximize
+        set(gcf, "units","normalized","outerposition",[0 0 1 1]); %maximize
 
-        adequateReply = questdlg('Adequate threshold values?', 'Check values','Yes', 'No', 'Yes');
-        if strcmp(adequateReply, 'No')
+        adequateReply = questdlg("Adequate threshold values?", "Check values","Yes", "No", "Yes");
+        if strcmp(adequateReply, "No")
             reuseReply = "No"; %mask not to be reused (because not moving on yet)
             clf; %clear figure
-            set(gcf, 'units','normalized','outerposition',[0 0 1 1]);    
+            set(gcf, "units","normalized","outerposition",[0 0 1 1]);    
         else
-           finalMasks(i, :, :) = squeeze(finalMasks(i, :, :))+uint8(maskedImage); %add mask to running mask array (1's are elements to ignore in mask)
+            %display saturation values in console
+            disp(strcat("Deforestation threshold values for image ", num2str(i), ":"))
+            disp(strcat("Hue values from ", num2str(hueLowBound), " to ", num2str(hueUpBound)))
+            disp(strcat("Saturation values from ", num2str(saturationLowBound), " to ", num2str(saturationUpBound)))
+            disp(strcat("Value values from ", num2str(valueLowBound), " "," to ", num2str(valueUpBound)))
+            disp(" ")
+            finalMasks(i, :, :) = squeeze(finalMasks(i, :, :))+uint8(maskedImage); %add mask to running mask array (1"s are elements to ignore in mask)
         end
 
     end
@@ -596,9 +607,9 @@ for i = 1:numImages
 
     
     if i~=numImages
-        reuseReply = questdlg('Repeat mask with same threshold values for next image?', 'Reuse threshold values?','Reuse (recommended)', 'Get new thresholds', 'Reuse (recommended)');
+        reuseReply = questdlg("Repeat mask with same threshold values for next image?", "Reuse threshold values?","Reuse (recommended)", "Get new thresholds", "Reuse (recommended)");
         clf; 
-	    set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
+	    set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
     end
    
 end
@@ -606,10 +617,10 @@ end
 
 %show masked images with objects removed
 clf;
-set(gcf, 'units','normalized','outerposition',[0 0 1 1]); 
-message = sprintf('Now we will show the satellite images with deforested areas in black (taking into account any previously identified objects)');
-reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-if strcmpi(reply, 'Cancel')
+set(gcf, "units","normalized","outerposition",[0 0 1 1]); 
+message = sprintf("Now we will show the satellite images with deforested areas in black (excluding any previously identified objects)");
+reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+if strcmpi(reply, "Cancel")
     return;
 end
 for i = 1:numImages
@@ -618,28 +629,40 @@ for i = 1:numImages
     imshow(squeeze(finalMaskedRGBImages(i,:,:,:)))
 end
 
-set(gcf, 'units','normalized','outerposition',[0 0 1 1]); %maximize
+set(gcf, "units","normalized","outerposition",[0 0 1 1]); %maximize
 
 %show bar graph of percent white
 pause(1)
 message = sprintf("Finally, let's see the change in percent deforestation in a bar graph");
-	reply = questdlg(message, 'Continue?', 'Continue', 'Cancel', 'Continue');
-if strcmpi(reply, 'Cancel')
+	reply = questdlg(message, "Continue?", "Continue", "Cancel", "Continue");
+if strcmpi(reply, "Cancel")
     return;
 end
 percentWhite = zeros(1, numImages);
+percentObject = percentWhite;
 xlabels = strings(1, numImages);
 for i = 1:numImages
     idx = squeeze(objectMasks(i,:,:))==1; %indices that should be ignored
+    percentObject(i) = nnz(idx)/(M*N); %get percentage of image that is detected object
     percentWhite(i) = getPercentWhite(squeeze(finalMasks(i,:,:)), idx);
     xlabels(i) = strcat("Image #", num2str(i));
 end
 subplot(2, numImages, (3*numImages+1)/2) %center bar graph
 bar(1:numImages, percentWhite)
-ylabel('% Deforestation')
-xlabel('Image #')
+ylabel("% Deforestation")
+xlabel("Image #")
 
+disp(" ")
+disp("Final percentages of deforestation:")
+for i = 1:numImages
+    disp(strcat("Image ", num2str(i), ": ",num2str(percentWhite(i)*100), "%"))
+end
 
+disp(" ")
+disp("Final percentages of detectedObjects:")
+for i = 1:numImages
+    disp(strcat("Image ", num2str(i), ": ",num2str(percentObject(i)*100), "%"))
+end
 %---------------------------------------------------------------------------------------------------------------------------------
 
 % Function to show the low and high threshold bars on the histogram plots.
@@ -651,20 +674,20 @@ try
 	subplot(3, 4, plotNumber); 
 	hold on;
 	yLimits = ylim;
-	line([lowThresh, lowThresh], yLimits, 'Color', 'r', 'LineWidth', 3);
-	line([highThresh, highThresh], yLimits, 'Color', 'r', 'LineWidth', 3);
+	line([lowThresh, lowThresh], yLimits, "Color", "r", "LineWidth", 3);
+	line([highThresh, highThresh], yLimits, "Color", "r", "LineWidth", 3);
 	% Place a text label on the bar chart showing the threshold.
 	fontSizeThresh = 14;
-	annotationTextL = sprintf('%d', lowThresh);
-	annotationTextH = sprintf('%d', highThresh);
-	% For text(), the x and y need to be of the data class "double" so let's cast both to double.
-	text(double(lowThresh + 5), double(0.85 * yLimits(2)), annotationTextL, 'FontSize', fontSizeThresh, 'Color', [0 .5 0], 'FontWeight', 'Bold');
-	text(double(highThresh + 5), double(0.85 * yLimits(2)), annotationTextH, 'FontSize', fontSizeThresh, 'Color', [0 .5 0], 'FontWeight', 'Bold');
+	annotationTextL = sprintf("%d", lowThresh);
+	annotationTextH = sprintf("%d", highThresh);
+	% For text(), the x and y need to be of the data class "double" so let"s cast both to double.
+	text(double(lowThresh + 5), double(0.85 * yLimits(2)), annotationTextL, "FontSize", fontSizeThresh, "Color", [0 .5 0], "FontWeight", "Bold");
+	text(double(highThresh + 5), double(0.85 * yLimits(2)), annotationTextH, "FontSize", fontSizeThresh, "Color", [0 .5 0], "FontWeight", "Bold");
 	
 catch ME
-	errorMessage = sprintf('Error in function %s() at line %d.\n\nError Message:\n%s', ...
+	errorMessage = sprintf("Error in function %s() at line %d.\n\nError Message:\n%s", ...
 		ME.stack(1).name, ME.stack(1).line, ME.message);
-	fprintf(1, '%s\n', errorMessage);
+	fprintf(1, "%s\n", errorMessage);
 	uiwait(warndlg(errorMessage));
 end
 return; % from PlaceThresholdBars()
@@ -680,7 +703,7 @@ function [percentWhite] = getPercentWhite(MaskedImage, idxs)
     dim = size(MaskedImage); numImages = dim(1);
     percentWhite = zeros(1, numImages);
 
-    if exist('idxs', 'var') %if idxs to ignore are passed to method 
+    if exist("idxs", "var") %if idxs to ignore are passed to method 
         numIgnore = nnz(idxs(:,:)); %num of elements to ignore (elements that are 1 from river)
             
         numWhite = nnz(MaskedImage(:,:));% # white pixels
@@ -699,8 +722,5 @@ function [percentWhite] = getPercentWhite(MaskedImage, idxs)
     end
 end
 
-
-
-%---------------------------------------------------------------------------------------------------------------------------------
 
 	
